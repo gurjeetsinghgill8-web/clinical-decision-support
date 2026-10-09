@@ -5,6 +5,7 @@ export interface ClinicianUser {
   name: string;
   role: UserRole;
   roleTitle: string;
+  qualifications?: string;
   department: string;
   regNumber: string;
   avatarInitials: string;
@@ -55,16 +56,22 @@ export interface ExtractedMedication {
 export interface OcrExtractionResult {
   documentType: string;
   extractedText: string;
+  patientName?: string;
+  patientAge?: string;
+  patientSex?: 'Male' | 'Female' | 'Other';
+  patientId?: string;
   uncertainItems?: UncertainOcrItem[];
   medicationsFound?: ExtractedMedication[];
   keyFindings?: string[];
   suggestedChiefComplaint?: string;
+  suggestedExamination?: string;
   vitalsDetected?: {
     bpSys?: string;
     bpDia?: string;
     heartRate?: string;
     spo2?: string;
     temperature?: string;
+    respiratoryRate?: string;
   };
   engine?: string;
   note?: string;
@@ -163,11 +170,21 @@ export interface FinalClinicalPlan {
   isSigned: boolean;
 }
 
+export interface SeniorPhysicianGuidance {
+  consultantSummary: string;
+  primaryDepartment: string;
+  pearlsAndPitfalls: string[];
+  immediateBedsideActions: string[];
+  escalationCriteria: string;
+}
+
 export interface ComprehensiveCaseAnalysis {
   source?: string;
   aiEngine?: string;
   model_version?: string;
   knowledge_version?: string;
+  primaryDepartment?: string;
+  seniorPhysicianGuidance?: SeniorPhysicianGuidance;
   clinician_review_required?: boolean;
   case_summary: CaseSummaryStructured;
   emergency_screen: EmergencyScreenResult;

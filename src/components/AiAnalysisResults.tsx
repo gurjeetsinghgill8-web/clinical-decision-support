@@ -1,7 +1,8 @@
 import React from 'react';
 import { 
   AlertTriangle, ShieldCheck, Microscope, FileText, CheckCircle, 
-  HelpCircle, ChevronRight, Stethoscope, AlertOctagon, BookOpen, Layers
+  HelpCircle, ChevronRight, Stethoscope, AlertOctagon, BookOpen, Layers,
+  Award, Sparkles, UserCheck, ShieldAlert
 } from 'lucide-react';
 import { ComprehensiveCaseAnalysis, CandidateDiagnosis, StagedInvestigationPlan } from '../types/clinical';
 import { Language, TRANSLATIONS } from '../utils/translations';
@@ -21,11 +22,105 @@ export const AiAnalysisResults: React.FC<AiAnalysisResultsProps> = ({
   language,
 }) => {
   const t = TRANSLATIONS[language];
-  const { emergency_screen, case_summary, differential_diagnoses, investigation_plan, decision_branches, evidence_sources } = analysis;
+  const { 
+    emergency_screen, case_summary, differential_diagnoses, 
+    investigation_plan, decision_branches, evidence_sources,
+    primaryDepartment, seniorPhysicianGuidance 
+  } = analysis;
 
   return (
     <div className="space-y-6">
-      {/* 1. Emergency Safety Screening Panel */}
+      {/* 1. Senior Consultant Physician Clinical Direction & Departmental Triage */}
+      <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-2xl p-5 sm:p-6 border-2 border-indigo-500/40 shadow-xl space-y-4 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-indigo-800/60 relative z-10">
+          <div className="flex items-center gap-3">
+            <div className="w-11 h-11 rounded-xl bg-indigo-600/40 border border-indigo-400/30 flex items-center justify-center text-indigo-300 shrink-0 shadow-inner">
+              <Stethoscope className="w-6 h-6 text-indigo-200" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-amber-400/20 text-amber-300 border border-amber-300/30 font-mono">
+                  Senior Consultant Oversight
+                </span>
+                <span className="text-xs font-bold text-slate-200">
+                  Dr. G. S. Gill, MBBS, PGDCCP (Non-invasive) • Cardio-Physician
+                </span>
+              </div>
+              <h3 className="text-base sm:text-lg font-extrabold tracking-tight text-white mt-0.5">
+                Multi-Specialty Clinical Triage & Department Direction
+              </h3>
+            </div>
+          </div>
+
+          {/* Primary Recommended Department */}
+          <div className="bg-indigo-600/30 border border-indigo-400/40 px-3.5 py-1.5 rounded-xl text-right">
+            <span className="text-[10px] uppercase font-bold text-indigo-300 block">Recommended Department</span>
+            <span className="text-xs sm:text-sm font-black text-white">
+              {primaryDepartment || seniorPhysicianGuidance?.primaryDepartment || 'Department of Internal Medicine'}
+            </span>
+          </div>
+        </div>
+
+        {/* Consultant Synthesis & Pearls for Residents */}
+        {seniorPhysicianGuidance && (
+          <div className="space-y-3 relative z-10 text-xs">
+            {/* High-level summary */}
+            <div className="p-3 bg-black/30 rounded-xl border border-indigo-900/60 text-indigo-100 leading-relaxed">
+              <strong className="text-amber-300 font-bold block mb-0.5">Consultant Physician Synthesis:</strong>
+              {seniorPhysicianGuidance.consultantSummary}
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {/* Pearls & Pitfalls */}
+              <div className="p-3 bg-slate-900/60 rounded-xl border border-indigo-800/40 space-y-1.5">
+                <span className="font-bold text-amber-300 uppercase text-[10px] tracking-wider flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                  Clinical Pearls & Pitfalls to Avoid (For Residents):
+                </span>
+                <ul className="space-y-1 text-slate-300 text-[11px] leading-relaxed">
+                  {seniorPhysicianGuidance.pearlsAndPitfalls?.map((pearl, i) => (
+                    <li key={i} className="flex items-start gap-1.5">
+                      <span className="text-amber-400 font-bold shrink-0">•</span>
+                      <span>{pearl}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Immediate Bedside Actions */}
+              <div className="p-3 bg-slate-900/60 rounded-xl border border-indigo-800/40 space-y-1.5">
+                <span className="font-bold text-emerald-300 uppercase text-[10px] tracking-wider flex items-center gap-1.5">
+                  <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
+                  Bedside Stabilizing Checklist (Next 30-60 min):
+                </span>
+                <ul className="space-y-1 text-slate-300 text-[11px] leading-relaxed">
+                  {seniorPhysicianGuidance.immediateBedsideActions?.map((act, i) => (
+                    <li key={i} className="flex items-start gap-1.5">
+                      <span className="text-emerald-400 font-bold shrink-0">•</span>
+                      <span>{act}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            {/* Escalation Threshold */}
+            {seniorPhysicianGuidance.escalationCriteria && (
+              <div className="p-2.5 bg-rose-950/40 rounded-xl border border-rose-500/30 text-rose-200 text-[11px] flex items-center gap-2">
+                <ShieldAlert className="w-4 h-4 text-rose-400 shrink-0" />
+                <div>
+                  <strong className="text-rose-300 font-bold">STAT Escalation Triggers:</strong>{' '}
+                  <span>{seniorPhysicianGuidance.escalationCriteria}</span>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* 2. Emergency Safety Screening Panel */}
       {emergency_screen && emergency_screen.isEmergency && (
         <div className="bg-gradient-to-r from-red-700 via-rose-700 to-red-800 text-white p-5 rounded-2xl shadow-xl border-2 border-red-400">
           <div className="flex items-start gap-3.5">

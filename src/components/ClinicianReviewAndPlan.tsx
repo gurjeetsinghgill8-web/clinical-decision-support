@@ -28,11 +28,37 @@ export const ClinicianReviewAndPlan: React.FC<ClinicianReviewAndPlanProps> = ({
   const [primaryDiagnosis, setPrimaryDiagnosis] = useState(
     differentials[0]?.condition || ''
   );
-  const [prescriptions, setPrescriptions] = useState(
-    '1. Tab. Aspirin 300mg oral chewable STAT\n2. Tab. Clopidogrel 300mg loading dose\n3. High-flow oxygen to maintain SpO2 >94%'
-  );
-  const [disposition, setDisposition] = useState('Immediate CCU / Cardiac Catheterization Admission');
-  const [followUp, setFollowUp] = useState('Continuous ECG telemetric monitoring. Repeat hs-Troponin in 2 hours.');
+  const [prescriptions, setPrescriptions] = useState(() => {
+    const top = (differentials[0]?.condition || '').toLowerCase();
+    if (top.includes('appendic') || top.includes('abdo') || top.includes('periton')) {
+      return '1. Strict NPO (Nil by mouth)\n2. IV Ringer Lactate 100 mL/hr\n3. IV Ceftriaxone 1g + Metronidazole 500mg\n4. IV Tramadol 50mg / Paracetamol 1g for analgesia';
+    }
+    if (top.includes('asthma') || top.includes('copd') || top.includes('wheez')) {
+      return '1. Supplemental O2 via mask to maintain SpO2 93-95%\n2. Salbutamol 5mg + Ipratropium 0.5mg nebulization q20m x 3\n3. IV Hydrocortisone 100mg STAT (or Prednisolone 40mg PO)';
+    }
+    if (top.includes('stroke') || top.includes('ischemic')) {
+      return '1. Head elevation 30 degrees, maintain normothermia\n2. Maintain permissive hypertension (SBP < 220 mmHg unless thrombolysis)\n3. Withhold antiplatelets until NCCT confirms no hemorrhage';
+    }
+    if (top.includes('sepsis') || top.includes('fever') || top.includes('pyelo')) {
+      return '1. IV Crystalloid bolus 30 mL/kg within 3 hours\n2. Blood cultures x 2 before antibiotics\n3. IV Ceftriaxone 2g STAT';
+    }
+    if (top.includes('coronary') || top.includes('angina') || top.includes('stemi') || top.includes('chest')) {
+      return '1. Tab. Aspirin 300mg oral chewable STAT\n2. Tab. Clopidogrel 300mg loading dose\n3. High-flow oxygen if SpO2 <90%';
+    }
+    return '1. Bed rest and continuous vital signs monitoring\n2. IV access and hydration as clinically indicated\n3. Symptomatic therapy and targeted workup';
+  });
+
+  const [disposition, setDisposition] = useState(() => {
+    const top = (differentials[0]?.condition || '').toLowerCase();
+    if (top.includes('coronary') || top.includes('angina') || top.includes('stemi')) return 'Immediate CCU / Cath Lab activation';
+    if (top.includes('appendic') || top.includes('abdo')) return 'Urgent General Surgery Admission / Laparoscopy';
+    if (top.includes('asthma') || top.includes('copd')) return 'Respiratory High Dependency Unit (HDU) / Ward';
+    if (top.includes('stroke')) return 'Acute Stroke Unit / Neuro-ICU';
+    if (top.includes('sepsis')) return 'Medical Intensive Care Unit (MICU) / Step-down Unit';
+    return 'Inpatient Medical Ward / Observation Unit';
+  });
+
+  const [followUp, setFollowUp] = useState('Continuous vital signs telemetric monitoring. Repeat labs in 2-4 hours.');
 
   const handleSetStatus = (index: number, status: 'ACCEPTED' | 'REJECTED' | 'MODIFIED') => {
     const updated = [...workingDifferentials];
@@ -257,11 +283,17 @@ export const ClinicianReviewAndPlan: React.FC<ClinicianReviewAndPlanProps> = ({
               Electronic Signature Attestation
             </span>
           </div>
-          <p className="text-sm font-bold text-white mt-1">
-            {currentUser.name} ({currentUser.regNumber})
-          </p>
-          <p className="text-xs text-slate-400">
-            {currentUser.roleTitle} • {currentUser.department}
+          <div className="mt-1 flex items-center gap-2 flex-wrap">
+            <span className="text-sm font-bold text-white">{currentUser.name}</span>
+            {currentUser.qualifications && (
+              <span className="px-1.5 py-0.2 rounded text-[10px] font-semibold bg-indigo-500/30 text-indigo-200 border border-indigo-400/30 font-mono">
+                {currentUser.qualifications}
+              </span>
+            )}
+            <span className="text-xs text-emerald-300 font-medium">• {currentUser.roleTitle}</span>
+          </div>
+          <p className="text-xs text-slate-400 mt-0.5">
+            {currentUser.department}
           </p>
         </div>
 

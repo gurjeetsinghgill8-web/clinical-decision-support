@@ -48,14 +48,14 @@ export const Header: React.FC<HeaderProps> = ({
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-xl font-bold tracking-tight text-white flex items-center gap-1.5 font-sans">
-                DR. GILL <span className="text-indigo-400 text-sm font-semibold tracking-normal">CDS-AI</span>
+                DR. G. S. GILL <span className="text-indigo-400 text-sm font-semibold tracking-normal">CDS-AI</span>
               </h1>
-              <span className="hidden sm:inline-block px-2 py-0.5 text-[10px] uppercase font-bold tracking-wider bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 rounded-md">
-                v1.0
+              <span className="hidden sm:inline-block px-2 py-0.5 text-[10px] font-bold tracking-wider bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 rounded-md">
+                MBBS, PGDCCP • Cardio-Physician
               </span>
             </div>
             <p className="text-xs text-slate-300 font-medium">
-              {t.appSubtitle}
+              Senior Consultant Physician • Multi-Specialty Clinical Decision Support
             </p>
           </div>
         </div>

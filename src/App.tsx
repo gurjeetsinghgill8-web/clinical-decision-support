@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
   ArrowRight, ArrowLeft, Sparkles, Loader2, Save, Printer, 
   ShieldAlert, Stethoscope, BookOpen, Shield, FolderArchive, 
-  Activity, CheckCircle2, User, RefreshCw
+  Activity, CheckCircle2, User, RefreshCw, Rocket
 } from 'lucide-react';
 import { 
   PatientData, VitalsData, ClinicalEncounter, ComprehensiveCaseAnalysis, 
@@ -23,6 +23,8 @@ import { PatientArchiveModal } from './components/PatientArchiveModal';
 import { AuditTrailModal } from './components/AuditTrailModal';
 import { GuidelinesModal } from './components/GuidelinesModal';
 import { PrintSummaryModal } from './components/PrintSummaryModal';
+import { StreamlitDeployModal } from './components/StreamlitDeployModal';
+import { FrontDoorOcrCard } from './components/FrontDoorOcrCard';
 import { 
   playHeartbeatBeep, 
   startContinuousEmergencyAlarm, 
@@ -89,6 +91,7 @@ export default function App() {
   const [showAuditModal, setShowAuditModal] = useState(false);
   const [showGuidelinesModal, setShowGuidelinesModal] = useState(false);
   const [showPrintModal, setShowPrintModal] = useState(false);
+  const [showStreamlitModal, setShowStreamlitModal] = useState(false);
 
   // Local storage archives
   const [encounters, setEncounters] = useState<ClinicalEncounter[]>(() => {
@@ -159,20 +162,34 @@ export default function App() {
   };
 
   // Run AI Diagnostic Reasoning
-  const handleRunAnalysis = async () => {
+  const executeRunAnalysis = async (
+    customPatient?: PatientData,
+    customVitals?: VitalsData,
+    customComplaint?: string,
+    customSymptoms?: string[],
+    customExam?: string,
+    customOcrText?: string
+  ) => {
+    const p = customPatient || patient;
+    const v = customVitals || vitals;
+    const c = customComplaint !== undefined ? customComplaint : chiefComplaint;
+    const s = customSymptoms || symptoms;
+    const e = customExam !== undefined ? customExam : examination;
+    const o = customOcrText !== undefined ? customOcrText : ocrText;
+
     setStep(4);
     setIsAnalyzing(true);
     try {
       const payload = {
-        patient,
-        vitals,
-        complaint: chiefComplaint,
-        symptoms,
-        examination,
-        ocrText,
-        pastHistory: patient.pastHistory,
-        medications: patient.currentMedications,
-        allergies: patient.allergies,
+        patient: p,
+        vitals: v,
+        complaint: c,
+        symptoms: s,
+        examination: e,
+        ocrText: o,
+        pastHistory: p.pastHistory,
+        medications: p.currentMedications,
+        allergies: p.allergies,
         clinicianName: currentUser.name,
       };
 
@@ -201,6 +218,10 @@ export default function App() {
     }
   };
 
+  const handleRunAnalysis = () => {
+    executeRunAnalysis();
+  };
+
   // Toggle order of investigation
   const handleToggleOrderTest = (testName: string) => {
     if (orderedTests.includes(testName)) {
@@ -210,31 +231,69 @@ export default function App() {
     }
   };
 
-  // Apply OCR Extraction
-  const handleApplyOcrExtraction = (extracted: {
-    chiefComplaint?: string;
-    vitals?: Partial<VitalsData>;
-    medications?: string;
-    rawText: string;
-    verifiedText: string;
-  }) => {
-    if (extracted.chiefComplaint && !chiefComplaint) {
+  // Apply OCR Extraction from Slip or Camera
+  const handleApplyOcrExtraction = (
+    extracted: {
+      patientName?: string;
+      patientAge?: string;
+      patientSex?: 'Male' | 'Female' | 'Other';
+      patientId?: string;
+      chiefComplaint?: string;
+      examination?: string;
+      vitals?: Partial<VitalsData>;
+      medications?: string;
+      rawText: string;
+      verifiedText: string;
+    },
+    autoRunAnalysis?: boolean
+  ) => {
+    const updatedPatient: PatientData = {
+      ...patient,
+      name: extracted.patientName || patient.name,
+      age: extracted.patientAge || patient.age,
+      sex: extracted.patientSex || patient.sex,
+      id: extracted.patientId || patient.id,
+      currentMedications: extracted.medications
+        ? patient.currentMedications
+          ? `${patient.currentMedications}, ${extracted.medications}`
+          : extracted.medications
+        : patient.currentMedications,
+    };
+    setPatient(updatedPatient);
+
+    const updatedVitals: VitalsData = {
+      ...vitals,
+      bpSys: extracted.vitals?.bpSys || vitals.bpSys,
+      bpDia: extracted.vitals?.bpDia || vitals.bpDia,
+      heartRate: extracted.vitals?.heartRate || vitals.heartRate,
+      spo2: extracted.vitals?.spo2 || vitals.spo2,
+      temperature: extracted.vitals?.temperature || vitals.temperature,
+      respiratoryRate: extracted.vitals?.respiratoryRate || vitals.respiratoryRate,
+    };
+    setVitals(updatedVitals);
+
+    const updatedComplaint = extracted.chiefComplaint || chiefComplaint;
+    if (extracted.chiefComplaint) {
       setChiefComplaint(extracted.chiefComplaint);
     }
-    if (extracted.medications) {
-      const currentMeds = patient.currentMedications ? `${patient.currentMedications}, ` : '';
-      setPatient({ ...patient, currentMedications: `${currentMeds}${extracted.medications}` });
+
+    const updatedExam = extracted.examination || examination;
+    if (extracted.examination) {
+      setExamination(extracted.examination);
     }
-    if (extracted.vitals) {
-      setVitals((prev) => ({
-        ...prev,
-        bpSys: extracted.vitals?.bpSys || prev.bpSys,
-        bpDia: extracted.vitals?.bpDia || prev.bpDia,
-        heartRate: extracted.vitals?.heartRate || prev.heartRate,
-        spo2: extracted.vitals?.spo2 || prev.spo2,
-      }));
-    }
+
     setOcrText(extracted.verifiedText);
+
+    if (autoRunAnalysis) {
+      executeRunAnalysis(
+        updatedPatient,
+        updatedVitals,
+        updatedComplaint,
+        symptoms,
+        updatedExam,
+        extracted.verifiedText
+      );
+    }
   };
 
   // Load Demo Preset Case
@@ -338,19 +397,35 @@ export default function App() {
     <div className="min-h-screen bg-slate-100/70 text-slate-900 flex flex-col font-sans">
       {/* Clinician Top Bar Banner */}
       <div className="bg-slate-950 text-slate-300 text-xs px-4 sm:px-6 py-1.5 border-b border-slate-800 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0" />
           <span className="text-slate-400">Authenticated Clinician:</span>
           <button
             onClick={() => setShowAuthModal(true)}
-            className="font-bold text-white hover:text-indigo-300 transition flex items-center gap-1 underline decoration-dotted"
+            className="font-bold text-white hover:text-indigo-300 transition flex items-center gap-1.5 flex-wrap"
           >
-            <span>{currentUser.name}</span>
-            <span className="text-[10px] text-slate-400 font-normal">({currentUser.regNumber})</span>
+            <span className="text-white font-extrabold">{currentUser.name}</span>
+            {currentUser.qualifications && (
+              <span className="px-1.5 py-0.2 rounded text-[10px] font-semibold bg-indigo-500/30 text-indigo-200 border border-indigo-400/30 font-mono">
+                {currentUser.qualifications}
+              </span>
+            )}
+            <span className="text-[11px] text-emerald-300 font-medium">
+              • {currentUser.roleTitle}
+            </span>
           </button>
         </div>
 
-        <div className="flex items-center gap-4 text-[11px] text-slate-400">
+        <div className="flex items-center gap-3 text-[11px] text-slate-400">
+          <button
+            onClick={() => setShowStreamlitModal(true)}
+            className="hover:text-white transition flex items-center gap-1.5 text-rose-200 font-bold bg-rose-950/80 hover:bg-rose-900 px-3 py-1 rounded-lg border border-rose-600 shadow-sm"
+            title="Auto-push to GitHub & deploy on Streamlit"
+          >
+            <Rocket className="w-3.5 h-3.5 text-rose-400" />
+            <span>GitHub Auto-Sync & Streamlit</span>
+          </button>
+
           <button
             onClick={() => setShowGuidelinesModal(true)}
             className="hover:text-white transition flex items-center gap-1 hidden sm:flex"
@@ -437,9 +512,15 @@ export default function App() {
           })}
         </div>
 
-        {/* STEP 1: Patient Demographics */}
+        {/* STEP 1: Patient Demographics & 1-Click Slip Scanner */}
         {step === 1 && (
           <div className="space-y-6 animate-in fade-in duration-200">
+            {/* Front-Door 1-Click Clinical Slip / Prescription Scanner */}
+            <FrontDoorOcrCard
+              onApplyExtraction={handleApplyOcrExtraction}
+              language={language}
+            />
+
             <PatientDemographics
               patient={patient}
               onChange={setPatient}
@@ -654,6 +735,10 @@ export default function App() {
 
       {showGuidelinesModal && (
         <GuidelinesModal onClose={() => setShowGuidelinesModal(false)} />
+      )}
+
+      {showStreamlitModal && (
+        <StreamlitDeployModal onClose={() => setShowStreamlitModal(false)} />
       )}
 
       {showPrintModal && (

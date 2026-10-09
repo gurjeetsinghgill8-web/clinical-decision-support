@@ -46,8 +46,9 @@ DISPOSITION:
 ${finalPlan?.escalationDecision || 'Routine follow-up'}
 
 ATTENDING CLINICIAN:
-${currentUser.name} (${currentUser.regNumber})
-${currentUser.roleTitle}`;
+${currentUser.name}${currentUser.qualifications ? ` (${currentUser.qualifications})` : ''}
+${currentUser.roleTitle}
+${currentUser.department}`;
 
     navigator.clipboard.writeText(text);
     setCopied(true);
@@ -93,10 +94,13 @@ ${currentUser.roleTitle}`;
           <div className="border-b-2 border-indigo-950 pb-4 flex justify-between items-start">
             <div>
               <h2 className="text-lg font-black tracking-tight text-indigo-950">
-                DR. GILL CLINICAL DECISION SUPPORT SYSTEM
+                DR. G. S. GILL CLINICAL DECISION SUPPORT SYSTEM
               </h2>
-              <p className="text-[11px] text-slate-600 font-medium">
-                Department of Emergency & Inpatient Medical Services • NABH Accredited
+              <p className="text-[11px] text-indigo-900 font-bold">
+                Dr. G. S. Gill, MBBS, PGDCCP (Non-invasive) • Cardio-Physician & Senior Consultant Physician
+              </p>
+              <p className="text-[10px] text-slate-500 font-medium">
+                Multi-Specialty Inpatient & Emergency Clinical Triage • NABH Accredited Standards
               </p>
             </div>
             <div className="text-right text-[11px] text-slate-500 font-mono">
@@ -209,10 +213,13 @@ ${currentUser.roleTitle}`;
             </div>
 
             <div className="text-right">
-              <div className="w-40 border-b border-slate-400 mb-1" />
-              <p className="font-bold text-slate-900">{currentUser.name}</p>
-              <p className="text-[10px] text-slate-500">{currentUser.roleTitle}</p>
-              <p className="text-[10px] text-slate-400 font-mono">{currentUser.regNumber}</p>
+              <div className="w-48 border-b border-slate-400 mb-1" />
+              <p className="font-bold text-slate-900 text-sm">{currentUser.name}</p>
+              {currentUser.qualifications && (
+                <p className="text-[11px] font-semibold text-indigo-900">{currentUser.qualifications}</p>
+              )}
+              <p className="text-[10px] text-slate-600 font-medium">{currentUser.roleTitle}</p>
+              <p className="text-[9px] text-slate-400 font-mono">{currentUser.department}</p>
             </div>
           </div>
         </div>

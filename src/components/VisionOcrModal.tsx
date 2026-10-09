@@ -6,7 +6,12 @@ import { Language } from '../utils/translations';
 interface VisionOcrModalProps {
   onClose: () => void;
   onApplyExtraction: (extracted: {
+    patientName?: string;
+    patientAge?: string;
+    patientSex?: 'Male' | 'Female' | 'Other';
+    patientId?: string;
     chiefComplaint?: string;
+    examination?: string;
     vitals?: Partial<VitalsData>;
     medications?: string;
     rawText: string;
@@ -34,7 +39,7 @@ export const VisionOcrModal: React.FC<VisionOcrModalProps> = ({
     try {
       // Create a clean sample prescription canvas representation
       const sampleText = `CLINICAL PRESCRIPTION - ST. MARY'S SPECIALTY HOSPITAL
-Date: 12-Oct-2026 | Dr. G. S. Gill, MD (Reg: MCI-184920)
+Date: 12-Oct-2026 | Dr. G. S. Gill, MBBS, PGDCCP (Non-invasive), Cardio-Physician
 Patient: Rajesh Sharma, Age: 56/M | ID: GILL-CARD-101
 
 Vitals on Examination:
@@ -133,7 +138,12 @@ Advise: Immediate 12-Lead ECG & Urgent hs-Troponin I test.`;
       .join(', ');
 
     onApplyExtraction({
+      patientName: ocrResult.patientName,
+      patientAge: ocrResult.patientAge,
+      patientSex: ocrResult.patientSex,
+      patientId: ocrResult.patientId,
       chiefComplaint: ocrResult.suggestedChiefComplaint,
+      examination: ocrResult.suggestedExamination,
       vitals: ocrResult.vitalsDetected,
       medications: medString,
       rawText: ocrResult.extractedText,

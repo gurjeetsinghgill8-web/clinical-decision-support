@@ -151,5 +151,33 @@ export const DEMO_CASES: DemoCase[] = [
     },
     chiefComplaint: 'High continuous fever with severe shaking rigors for 3 days. Severe dysuria, increased urinary frequency, and right flank tenderness. Marked lethargy, confusion, and poor oral intake over the last 12 hours.',
     symptoms: ['High Fever', 'Chills / Rigors', 'Altered Mental Status', 'Flank Pain', 'Dysuria / Urinary Frequency'],
+  },
+  {
+    id: 'DEMO-STROKE',
+    title: 'Acute Focal Neurological Deficit (Stroke Alert)',
+    category: 'Neurology (STAT Window)',
+    badgeColor: 'bg-rose-100 text-rose-800 border-rose-200',
+    patient: {
+      id: 'GILL-NEURO-606',
+      name: 'Harpreet Kaur',
+      age: '62',
+      sex: 'Female',
+      weight: '64',
+      allergies: 'None known',
+      pastHistory: 'Hypertension (10 yrs), Non-valvular Atrial Fibrillation',
+      currentMedications: 'Amlodipine 5mg, Aspirin 75mg (erratic compliance)',
+    },
+    vitals: {
+      bpSys: '186',
+      bpDia: '106',
+      heartRate: '110',
+      spo2: '96',
+      temperature: '98.6',
+      tempUnit: 'F',
+      respiratoryRate: '18',
+      painScore: '2',
+    },
+    chiefComplaint: 'Sudden onset right-sided facial weakness, right arm heaviness (unable to lift off bed), and expressive dysphasia (slurred, unintelligible speech) that began 75 minutes ago while eating breakfast. Family reports no prior episodes.',
+    symptoms: ['Facial Droop', 'Arm Drift / Weakness', 'Speech Difficulty', 'Altered Sensorium', 'Elevated Blood Pressure'],
   }
 ];

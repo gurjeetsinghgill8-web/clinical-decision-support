@@ -5,18 +5,20 @@ import { ClinicianUser, UserRole } from '../types/clinical';
 export const CLINICIAN_PROFILES: ClinicianUser[] = [
   {
     id: 'DOC-GILL-01',
-    name: 'Dr. Gurjeet Singh Gill, MD',
+    name: 'Dr. G. S. Gill',
     role: 'LEAD_CLINICIAN',
-    roleTitle: 'Senior Consultant & Lead Clinician',
-    department: 'Department of Emergency & Internal Medicine',
-    regNumber: 'NMC / MCI-184920',
-    avatarInitials: 'DG',
+    roleTitle: 'Cardio-Physician & Senior Consultant Physician',
+    qualifications: 'MBBS, PGDCCP (Non-invasive)',
+    department: 'Department of Internal Medicine & Non-invasive Cardiology',
+    regNumber: 'MBBS, PGDCCP (Non-invasive)',
+    avatarInitials: 'GG',
   },
   {
     id: 'DOC-SHARMA-02',
     name: 'Dr. Ananya Sharma, MD',
     role: 'RESIDENT',
     roleTitle: 'Senior Resident Physician',
+    qualifications: 'MBBS, MD',
     department: 'Acute Care & Inpatient Services',
     regNumber: 'DMC-49201',
     avatarInitials: 'AS',
@@ -26,6 +28,7 @@ export const CLINICIAN_PROFILES: ClinicianUser[] = [
     name: 'Sister Priya Nair, RN, BSN',
     role: 'TRIAGE_NURSE',
     roleTitle: 'Senior Triage & Resuscitation Officer',
+    qualifications: 'BSN, RN',
     department: 'Emergency Triage & Vital Monitoring',
     regNumber: 'INC-88912',
     avatarInitials: 'PN',
@@ -35,6 +38,7 @@ export const CLINICIAN_PROFILES: ClinicianUser[] = [
     name: 'Vikramaditya Seth',
     role: 'ADMIN',
     roleTitle: 'Clinical Audit & Quality Lead',
+    qualifications: 'MHA, CPHQ',
     department: 'Hospital Quality Assurance & Governance',
     regNumber: 'QA-GOV-902',
     avatarInitials: 'VS',
@@ -110,17 +114,22 @@ export const ClinicianAuthModal: React.FC<ClinicianAuthModalProps> = ({
                     </div>
 
                     <div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 flex-wrap">
                         <h4 className="text-sm font-bold text-slate-900">{profile.name}</h4>
+                        {profile.qualifications && (
+                          <span className="px-1.5 py-0.2 text-[10px] font-semibold bg-indigo-50 text-indigo-700 rounded border border-indigo-200">
+                            {profile.qualifications}
+                          </span>
+                        )}
                         {profile.role === 'LEAD_CLINICIAN' && (
                           <span className="px-1.5 py-0.2 text-[9px] font-bold bg-amber-100 text-amber-800 rounded border border-amber-200 uppercase">
                             Lead
                           </span>
                         )}
                       </div>
-                      <p className="text-xs text-slate-600">{profile.roleTitle}</p>
+                      <p className="text-xs font-medium text-slate-700 mt-0.5">{profile.roleTitle}</p>
                       <p className="text-[10px] text-slate-400 font-mono mt-0.5">
-                        Reg: {profile.regNumber} • {profile.department}
+                        {profile.department}
                       </p>
                     </div>
                   </div>
