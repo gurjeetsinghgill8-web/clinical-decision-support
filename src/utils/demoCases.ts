@@ -1,0 +1,155 @@
+import { PatientData, VitalsData } from '../types/clinical';
+
+export interface DemoCase {
+  id: string;
+  title: string;
+  category: string;
+  badgeColor: string;
+  patient: PatientData;
+  vitals: VitalsData;
+  chiefComplaint: string;
+  symptoms: string[];
+}
+
+export const DEMO_CASES: DemoCase[] = [
+  {
+    id: 'DEMO-ACS',
+    title: 'Acute Chest Pain / Suspected STEMI',
+    category: 'Cardiology (Emergency)',
+    badgeColor: 'bg-rose-100 text-rose-800 border-rose-200',
+    patient: {
+      id: 'GILL-CARD-101',
+      name: 'Rajesh Sharma',
+      age: '56',
+      sex: 'Male',
+      weight: '78',
+      allergies: 'Penicillin (mild rash)',
+      pastHistory: 'Type 2 Diabetes (6 yrs), Hypertension, Ex-smoker (20 pack-years)',
+      currentMedications: 'Metformin 500mg BD, Amlodipine 5mg OD',
+    },
+    vitals: {
+      bpSys: '168',
+      bpDia: '102',
+      heartRate: '98',
+      spo2: '95',
+      temperature: '98.4',
+      tempUnit: 'F',
+      respiratoryRate: '22',
+      painScore: '8',
+    },
+    chiefComplaint: 'Acute onset substernal chest heaviness and retrosternal crushing pain lasting for 45 minutes, radiating to left shoulder and jaw. Associated with cold diaphoresis, nausea, and mild shortness of breath. No relief with rest.',
+    symptoms: ['Chest Pain', 'Shortness of Breath', 'Diaphoresis / Sweating', 'Nausea', 'Radiation to Left Arm/Jaw'],
+  },
+  {
+    id: 'DEMO-CRISIS',
+    title: 'Hypertensive Emergency & Hypoxia',
+    category: 'Critical Care (STAT Alert)',
+    badgeColor: 'bg-red-100 text-red-800 border-red-200',
+    patient: {
+      id: 'GILL-EMERG-202',
+      name: 'Sunita Devi',
+      age: '64',
+      sex: 'Female',
+      weight: '68',
+      allergies: 'No known drug allergies',
+      pastHistory: 'Longstanding poorly controlled hypertension, CKD Stage 3',
+      currentMedications: 'Telmisartan 40mg OD (erratic compliance)',
+    },
+    vitals: {
+      bpSys: '215',
+      bpDia: '128',
+      heartRate: '116',
+      spo2: '89',
+      temperature: '98.8',
+      tempUnit: 'F',
+      respiratoryRate: '30',
+      painScore: '6',
+    },
+    chiefComplaint: 'Severe sudden shortness of breath on lying flat (orthopnea), pounding occipital headache, blurred vision, and frothy pinkish cough. Patient is anxious, tachypneic, and using accessory muscles.',
+    symptoms: ['Shortness of Breath', 'Severe Headache', 'Visual Disturbance', 'Orthopnea', 'Chest Discomfort'],
+  },
+  {
+    id: 'DEMO-ASTHMA',
+    title: 'Acute Severe Asthma Exacerbation',
+    category: 'Pulmonology (Urgent)',
+    badgeColor: 'bg-amber-100 text-amber-800 border-amber-200',
+    patient: {
+      id: 'GILL-RESP-303',
+      name: 'Aarav Patel',
+      age: '28',
+      sex: 'Male',
+      weight: '62',
+      allergies: 'NSAIDs / Aspirin (induced asthma)',
+      pastHistory: 'Extrinsic bronchial asthma since childhood, allergic rhinitis',
+      currentMedications: 'Salbutamol Inhaler PRN, Budesonide/Formoterol Turbuhaler',
+    },
+    vitals: {
+      bpSys: '126',
+      bpDia: '82',
+      heartRate: '124',
+      spo2: '91',
+      temperature: '99.0',
+      tempUnit: 'F',
+      respiratoryRate: '28',
+      painScore: '3',
+    },
+    chiefComplaint: 'Progressive wheezing, chest tightness, and severe breathlessness triggered by seasonal dust exposure. Unable to complete full sentences in one breath. Inhaled 4 puffs of salbutamol at home with minimal relief.',
+    symptoms: ['Shortness of Breath', 'Wheezing', 'Chest Tightness', 'Cough', 'Speech Difficulty'],
+  },
+  {
+    id: 'DEMO-APPENDIX',
+    title: 'Acute Right Lower Quadrant Pain',
+    category: 'Gastroenterology / Surgery',
+    badgeColor: 'bg-emerald-100 text-emerald-800 border-emerald-200',
+    patient: {
+      id: 'GILL-SURG-404',
+      name: 'Pooja Verma',
+      age: '23',
+      sex: 'Female',
+      weight: '54',
+      allergies: 'None',
+      pastHistory: 'None, no previous surgeries',
+      currentMedications: 'None',
+    },
+    vitals: {
+      bpSys: '118',
+      bpDia: '76',
+      heartRate: '94',
+      spo2: '99',
+      temperature: '101.2',
+      tempUnit: 'F',
+      respiratoryRate: '18',
+      painScore: '7',
+    },
+    chiefComplaint: 'Periumbilical crampy pain that began 18 hours ago and has now migrated and localized intensely to the right iliac fossa (McBurney point). Worsened with walking and coughing. Accompanied by anorexia, two episodes of non-bilious vomiting, and low-grade pyrexia.',
+    symptoms: ['Abdominal Pain', 'Nausea', 'Vomiting', 'Fever / Chills', 'Loss of Appetite'],
+  },
+  {
+    id: 'DEMO-SEPSIS',
+    title: 'High Pyrexia & Sepsis Prodrome',
+    category: 'Infectious Disease',
+    badgeColor: 'bg-purple-100 text-purple-800 border-purple-200',
+    patient: {
+      id: 'GILL-INF-505',
+      name: 'Mohinder Singh',
+      age: '51',
+      sex: 'Male',
+      weight: '82',
+      allergies: 'Sulfa drugs',
+      pastHistory: 'Type 2 Diabetes, Benign Prostatic Hypertrophy (BPH)',
+      currentMedications: 'Glimepiride 2mg, Tamsulosin 0.4mg',
+    },
+    vitals: {
+      bpSys: '96',
+      bpDia: '62',
+      heartRate: '128',
+      spo2: '94',
+      temperature: '103.6',
+      tempUnit: 'F',
+      respiratoryRate: '26',
+      painScore: '5',
+    },
+    chiefComplaint: 'High continuous fever with severe shaking rigors for 3 days. Severe dysuria, increased urinary frequency, and right flank tenderness. Marked lethargy, confusion, and poor oral intake over the last 12 hours.',
+    symptoms: ['High Fever', 'Chills / Rigors', 'Altered Mental Status', 'Flank Pain', 'Dysuria / Urinary Frequency'],
+  }
+];

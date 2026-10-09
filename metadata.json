@@ -1,0 +1,6 @@
+{
+  "name": "Dr. Gill CDS-AI",
+  "description": "Clinical Decision Support System with Smart Vitals, Emergency Triage, Voice Dictation, Vision OCR, and Evidence-Based Diagnostic Reasoning.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
